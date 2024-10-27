@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 5s # Intervalo padrão de scraping para coletar métricas
+
+scrape_configs:
+  # Configuração para monitorar o próprio Prometheus
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Configuração para monitorar o App Go
+  - job_name: "goapp"
+    static_configs:
+      - targets: ["goapp:8080"] # Porta onde o app Go expõe as métricas
+
+  # Configuração para monitorar o RabbitMQ
+  - job_name: "rabbitmq"
+    static_configs:
+      - targets: ["rabbitmq:15692"] # Porta de métricas do RabbitMQ Management Plugin
+
