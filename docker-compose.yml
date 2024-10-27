@@ -1,17 +1,17 @@
 version: '3.8'
 
 services:
-  goapp:
-    build: .
-    volumes:
-      - .:/app
-    depends_on:
-      - rabbitmq
-    networks:
-      - app-network
+  # goapp:
+    # build: .
+    # volumes:
+    #   - .:/app
+    # depends_on:
+    #   - rabbitmq
+    # networks:
+    #   - app-network
 
   rabbitmq:
-    image: rabbitmq:3.8.16-management
+    image: rabbitmq:4.0.2-management
     container_name: rabbitmq
     hostname: rabbitmq
     ports:

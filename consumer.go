@@ -17,7 +17,7 @@ func failOnError(err error, msg string) {
 // Consumer - consome mensagens e salva no banco de dados
 func consumeMessages(ch *amqp.Channel, queueName string, db *sql.DB) {
     msgs, err := ch.Consume(
-        "test_queue", 
+        "orders", 
         "", 
         false, 
         false, 
@@ -28,7 +28,7 @@ func consumeMessages(ch *amqp.Channel, queueName string, db *sql.DB) {
     failOnError(err, "Failed to register a consumer")
 
     // Número de consumidores (goroutines)
-	numConsumers := 5
+	numConsumers := 500
 	for i := 0; i < numConsumers; i++ {
 		go func(consumerID int) {
 			for d := range msgs {
@@ -38,13 +38,13 @@ func consumeMessages(ch *amqp.Channel, queueName string, db *sql.DB) {
 				//time.Sleep(500 * time.Millisecond) // Simula processamento
 
                  // Insere a mensagem no banco de dados
-                _, err := db.Exec("INSERT INTO orders (message) VALUES (?)", string(d.Body))
-                if err != nil {
-                    log.Printf("Failed to insert message: %v", err)
-                    // Caso o salvamento falhe, rejeitamos a mensagem para reprocessamento
-                    d.Nack(false, true) // Reinsere a mensagem na fila
-                    continue
-                }
+                // _, err := db.Exec("INSERT INTO orders (message) VALUES (?)", string(d.Body))
+                // if err != nil {
+                //     log.Printf("Failed to insert message: %v", err)
+                //     // Caso o salvamento falhe, rejeitamos a mensagem para reprocessamento
+                //     d.Nack(false, true) // Reinsere a mensagem na fila
+                //     continue
+                // }
 
                 // Confirma manualmente a mensagem após salvar com sucesso no banco
                 err = d.Ack(true)
@@ -76,7 +76,7 @@ func main() {
     defer ch.Close()
 
     queue, err := ch.QueueDeclare(
-        "test_queue", 
+        "orders", 
         true, 
         false, 
         false, 

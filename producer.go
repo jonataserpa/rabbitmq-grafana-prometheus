@@ -22,7 +22,7 @@ func main() {
     defer ch.Close()
 
     q, err := ch.QueueDeclare(
-        "test_queue", true, false, false, false, nil,
+        "orders", true, false, false, false, nil,
     )
     failOnError(err, "Failed to declare a queue")
 
